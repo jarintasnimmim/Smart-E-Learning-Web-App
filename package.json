@@ -2,7 +2,7 @@
   "name": "smart-e-learning",
   "version": "1.0.0",
   "scripts": {
-    "build": "npm install --prefix frontend && npm run build --prefix frontend"
+    "build": "cd frontend && npm install && npm run build"
   },
   "dependencies": {
     "autoprefixer": "^10.4.27",
