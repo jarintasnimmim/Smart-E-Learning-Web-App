@@ -10,7 +10,11 @@ app.use(express.json());
 
 // CORS কনফিগারেশন - এটি আপনার ফ্রন্টএন্ডকে এক্সেস দিবে
 app.use(cors({
-    origin: ["https://smart-e-learning-web-app.vercel.app", "http://localhost:5173"], 
+    origin: [
+        "https://smart-e-learning-web-app.vercel.app", 
+        "https://smart-e-learning-web-app-git-master-jarintasnimmims-projects.vercel.app",
+        "http://localhost:5173" // লোকাল চেক করার জন্য
+    ],
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true
 }));

@@ -47,7 +47,5 @@ const UserSchema = new mongoose.Schema({
     timestamps: true // এটি আপনার জন্য createdAt এবং updatedAt ম্যানেজ করবে
 });
 
-// ইনডেক্সিং (ইমেইল দিয়ে দ্রুত ইউজার খুঁজে পাওয়ার জন্য)
-UserSchema.index({ email: 1 });
 
 module.exports = mongoose.model('User', UserSchema);
