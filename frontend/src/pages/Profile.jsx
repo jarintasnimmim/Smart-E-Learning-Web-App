@@ -13,16 +13,19 @@ const Profile = () => {
         avatar: ''
     });
 
+    // Vercel বা Local হোস্টের জন্য API Base URL সেট করা
+    const API_URL = import.meta.env.VITE_API_URL || 'https://smart-e-learning-web-app.vercel.app/_/backend';
     const storedUser = JSON.parse(localStorage.getItem('user'));
 
-    // ডাটাবেস থেকে ইউজারের তথ্য নিয়ে আসা
+    // ডাটাবেস থেকে ইউজারের তথ্য নিয়ে আসা
     useEffect(() => {
         const fetchUserData = async () => {
             try {
-                const userId = storedUser.id || storedUser._id; 
+                const userId = storedUser?.id || storedUser?._id; 
                 if (!userId) return;
 
-                const res = await axios.get('/api/auth/profile/${userId}');
+                // এখানে ব্যাকটিক (`) এবং API_URL ব্যবহার করা হয়েছে
+                const res = await axios.get(`${API_URL}/api/auth/profile/${userId}`);
                 setUser(res.data);
                 
                 // এডিট ফর্মের ডিফল্ট ভ্যালু সেট করা
@@ -44,21 +47,26 @@ const Profile = () => {
         e.preventDefault();
         try {
             const userId = storedUser.id || storedUser._id;
-            const res = await axios.put('/api/auth/profile/${userId}', formData);
+            // এখানেও ব্যাকটিক (`) এবং API_URL ব্যবহার করা হয়েছে
+            const res = await axios.put(`${API_URL}/api/auth/profile/${userId}`, formData);
             
             setUser(res.data); // স্ক্রিনে ডাটা আপডেট
             
-            // LocalStorage আপডেট করা যাতে নাম পরিবর্তন ন্যাভিবারেও দেখা যায়
+            // LocalStorage আপডেট করা যাতে নাম পরিবর্তন ন্যাভিবারেও দেখা যায়
             localStorage.setItem('user', JSON.stringify({ ...storedUser, name: formData.name }));
             
             setIsEditing(false);
-            alert("Profile Updated! ✅");
+            alert("✅ Profile Updated!");
         } catch (err) {
-            alert("Update failed!");
+            alert("❌ Update failed!");
         }
     };
 
-    if (!user) return <div className="text-white text-center mt-20 italic">Loading Profile...</div>;
+    if (!user) return (
+        <div className="min-h-screen bg-slate-900 flex items-center justify-center">
+            <div className="text-white text-center italic animate-pulse">Loading Profile...</div>
+        </div>
+    );
 
     return (
         <div className="min-h-screen bg-slate-900 flex items-center justify-center p-6">
@@ -75,7 +83,7 @@ const Profile = () => {
                 <h2 className="text-2xl font-bold text-white mb-1">{user.name}</h2>
                 <p className="text-blue-400 font-medium mb-1 uppercase text-xs tracking-widest">{user.role}</p>
                 
-                {/* বায়ো সেকশন */}
+                {/* বায়ো সেকশন */}
                 <p className="text-slate-400 text-sm italic mb-6">
                     {user.bio || "No bio added yet. Click edit to add one!"}
                 </p>

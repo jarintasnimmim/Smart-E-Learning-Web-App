@@ -10,12 +10,16 @@ const WatchCourse = () => {
     const [comment, setComment] = useState('');
     const storedUser = JSON.parse(localStorage.getItem('user'));
 
+    // Vercel বা Local হোস্টের জন্য API Base URL সেট করা
+    const API_URL = import.meta.env.VITE_API_URL || 'https://smart-e-learning-web-app.vercel.app/_/backend';
+
     const fetchCourse = async () => {
         try {
-            const res = await axios.get('/api/courses/${id}');
+            // এখানে ব্যাকটিক (`) এবং পূর্ণাঙ্গ লিঙ্ক ব্যবহার করা হয়েছে
+            const res = await axios.get(`${API_URL}/api/courses/${id}`);
             setCourse(res.data);
         } catch (err) {
-            console.error("Course load failed");
+            console.error("Course load failed", err);
         }
     };
 
@@ -32,24 +36,28 @@ const WatchCourse = () => {
         }
 
         try {
-            const res = await axios.post('/api/courses/${id}/review', {
+            // রিভিউ সাবমিট করার জন্য ডাইনামিক লিঙ্ক
+            const res = await axios.post(`${API_URL}/api/courses/${id}/review`, {
                 rating: userRating,
                 comment: comment,
                 userId: storedUser.id || storedUser._id,
                 userName: storedUser.name
             });
             
-            alert(res.data.message || "Review Added!");
+            alert(res.data.message || "✅ Review Added!");
             setComment('');
-            fetchCourse(); // রিভিউ লিস্ট আপডেট করার জন্য
+            fetchCourse(); // নতুন রিভিউ দেখানোর জন্য রিফ্রেশ
         } catch (err) {
-            // আসল এরর মেসেজ দেখাবে (যেমন: Already reviewed)
             const errorMsg = err.response?.data?.message || "Something went wrong";
             alert("❌ " + errorMsg);
         }
     };
 
-    if (!course) return <div className="text-white text-center mt-20 italic tracking-widest">Loading Video...</div>;
+    if (!course) return (
+        <div className="min-h-screen bg-slate-950 flex items-center justify-center">
+            <div className="text-white text-2xl animate-pulse italic tracking-widest">Loading Video...</div>
+        </div>
+    );
 
     return (
         <div className="min-h-screen bg-slate-950 text-white p-4 md:p-8">
@@ -74,7 +82,7 @@ const WatchCourse = () => {
                             <p className="text-slate-400 mt-4 text-lg leading-relaxed">{course.description}</p>
                         </div>
 
-                        {/* রিভিউ দেওয়ার ফর্ম */}
+                        {/* রিভিউ দেওয়ার ফর্ম */}
                         <div className="bg-slate-900/80 p-8 rounded-3xl border border-slate-800 backdrop-blur-sm shadow-xl">
                             <h3 className="text-2xl font-bold mb-6 flex items-center gap-2">
                                 <Star className="text-yellow-500 fill-yellow-500" /> Share Your Thoughts
@@ -118,7 +126,7 @@ const WatchCourse = () => {
                         
                         <div className="max-h-[600px] overflow-y-auto pr-3 space-y-4 custom-scrollbar">
                             {course.reviews?.length > 0 ? (
-                                course.reviews.map((rev, index) => (
+                                [...course.reviews].reverse().map((rev, index) => (
                                     <div key={index} className="bg-slate-900/40 p-5 rounded-2xl border border-slate-800/50 hover:border-slate-700 transition-all shadow-sm">
                                         <div className="flex justify-between items-start mb-3">
                                             <span className="font-bold text-blue-400">{rev.userName}</span>

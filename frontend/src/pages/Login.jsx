@@ -9,10 +9,14 @@ const Login = () => {
     const [showPassword, setShowPassword] = useState(false);
     const navigate = useNavigate();
 
+    // Vercel বা Local হোস্টের জন্য API Base URL সেট করা
+    const API_URL = import.meta.env.VITE_API_URL || 'https://smart-e-learning-web-app.vercel.app/_/backend';
+
     const handleLogin = async (e) => {
         e.preventDefault();
         try {
-            const res = await axios.post('/api/auth/login', { email, password });
+            // পূর্ণাঙ্গ এপিআই লিঙ্ক এবং ব্যাকটিক (`) ব্যবহার করা হয়েছে
+            const res = await axios.post(`${API_URL}/api/auth/login`, { email, password });
             
             // ১. ব্যাকএন্ড থেকে আসা টোকেনটি ব্রাউজারে সেভ করা
             localStorage.setItem('token', res.data.token); 
@@ -56,7 +60,6 @@ const Login = () => {
                         <div>
                             <div className="flex justify-between mb-1 ml-1">
                                 <label className="text-sm font-semibold text-gray-700">Password</label>
-                                {/* এখানে লিঙ্কটি আপডেট করা হয়েছে */}
                                 <Link to="/forgot-password" size={20} className="text-sm font-bold text-blue-600 hover:text-blue-700">
                                     Forgot password?
                                 </Link>

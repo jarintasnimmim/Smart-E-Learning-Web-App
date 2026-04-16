@@ -14,12 +14,12 @@ const SignUp = () => {
   const handleSignUp = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post('/api/auth/register', {
-        name,
-        email,
-        password,
-        role
-      });
+      const res = await axios.post(`${import.meta.env.VITE_API_URL}/api/auth/register`, {
+  name,
+  email,
+  password,
+  role
+   });
       alert("✅ Registration Successful! Please Login.");
       navigate('/login'); // Success hole login page-e niye jabe
     } catch (err) {

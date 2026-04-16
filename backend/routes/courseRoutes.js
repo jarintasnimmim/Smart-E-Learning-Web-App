@@ -2,24 +2,25 @@ const express = require('express');
 const router = express.Router();
 const Course = require('../models/Course');
 
-// ১. সব কোর্স পাওয়ার জন্য (GET)
+// ১. সব কোর্স পাওয়ার জন্য (GET)
 router.get('/', async (req, res) => {
     try {
-        const courses = await Course.find();
+        const courses = await Course.find().sort({ createdAt: -1 }); // নতুন কোর্সগুলো আগে দেখাবে
         res.json(courses);
     } catch (err) {
-        res.status(500).send('Server Error');
+        res.status(500).json({ msg: 'Server Error' });
     }
 });
 
-// ২. নির্দিষ্ট একটি কোর্স আইডি দিয়ে খোঁজা (GET)
+// ২. নির্দিষ্ট একটি কোর্স আইডি দিয়ে খোঁজা (GET)
 router.get('/:id', async (req, res) => {
     try {
         const course = await Course.findById(req.params.id);
         if (!course) return res.status(404).json({ msg: 'Course not found' });
         res.json(course);
     } catch (err) {
-        res.status(500).send('Server Error');
+        if (err.kind === 'ObjectId') return res.status(404).json({ msg: 'Invalid Course ID' });
+        res.status(500).json({ msg: 'Server Error' });
     }
 });
 
@@ -33,12 +34,14 @@ router.post('/add', async (req, res) => {
             price,
             image,
             videoUrl,
-            description
+            description,
+            reviews: [],
+            averageRating: 0
         });
         await newCourse.save();
         res.status(201).json(newCourse);
     } catch (err) {
-        res.status(500).json({ msg: "Server Error" });
+        res.status(500).json({ msg: "Server Error: Could not add course" });
     }
 });
 
@@ -48,21 +51,23 @@ router.put('/:id', async (req, res) => {
         const updatedCourse = await Course.findByIdAndUpdate(
             req.params.id,
             { $set: req.body },
-            { new: true }
+            { new: true, runValidators: true }
         );
+        if (!updatedCourse) return res.status(404).json({ msg: 'Course not found' });
         res.json(updatedCourse);
     } catch (err) {
-        res.status(500).send('Server Error');
+        res.status(500).json({ msg: 'Server Error: Update failed' });
     }
 });
 
 // ৫. কোর্স ডিলিট করার জন্য (DELETE)
 router.delete('/:id', async (req, res) => {
     try {
-        await Course.findByIdAndDelete(req.params.id);
-        res.json({ msg: 'Course removed' });
+        const course = await Course.findByIdAndDelete(req.params.id);
+        if (!course) return res.status(404).json({ msg: 'Course not found' });
+        res.json({ msg: 'Course removed successfully ✅' });
     } catch (err) {
-        res.status(500).send('Server Error');
+        res.status(500).json({ msg: 'Server Error' });
     }
 });
 
@@ -72,14 +77,9 @@ router.post('/:id/review', async (req, res) => {
         const { rating, comment, userId, userName } = req.body;
         const course = await Course.findById(req.params.id);
 
-        if (!course) {
-            return res.status(404).json({ message: 'Course not found' });
-        }
+        if (!course) return res.status(404).json({ message: 'Course not found' });
 
-        if (!course.reviews) {
-            course.reviews = [];
-        }
-
+        // আগে থেকে রিভিউ দেওয়া আছে কি না চেক
         const alreadyReviewed = course.reviews.find(
             (r) => r.userId.toString() === userId.toString()
         );
@@ -98,15 +98,13 @@ router.post('/:id/review', async (req, res) => {
 
         course.reviews.push(review);
         
-        if (course.reviews.length > 0) {
-            const totalRating = course.reviews.reduce((acc, item) => item.rating + acc, 0);
-            course.averageRating = totalRating / course.reviews.length;
-        }
+        // এভারেজ রেটিং ক্যালকুলেশন
+        const totalRating = course.reviews.reduce((acc, item) => item.rating + acc, 0);
+        course.averageRating = totalRating / course.reviews.length;
 
         await course.save();
-        res.status(201).json({ message: 'Review added successfully!' });
+        res.status(201).json({ message: 'Review added successfully! ⭐' });
     } catch (err) {
-        console.error("Review Error:", err.message);
         res.status(500).json({ message: "Server Error" });
     }
 });
@@ -117,16 +115,19 @@ router.delete('/:courseId/review/:reviewId', async (req, res) => {
         const { courseId, reviewId } = req.params;
         const course = await Course.findById(courseId);
 
-        if (!course) {
-            return res.status(404).json({ message: "Course not found" });
-        }
+        if (!course) return res.status(404).json({ message: "Course not found" });
 
-        // রিভিউটি ফিল্টার করে বাদ দেওয়া
+        // রিভিউ ডিলিট
+        const initialReviewCount = course.reviews.length;
         course.reviews = course.reviews.filter(
             (rev) => rev._id.toString() !== reviewId
         );
 
-        // ডিলিট করার পর এভারেজ রেটিং আবার হিসেব করা
+        if (course.reviews.length === initialReviewCount) {
+            return res.status(404).json({ message: "Review not found" });
+        }
+
+        // নতুন এভারেজ রেটিং হিসেব
         if (course.reviews.length > 0) {
             const totalRating = course.reviews.reduce((acc, item) => item.rating + acc, 0);
             course.averageRating = totalRating / course.reviews.length;
@@ -135,10 +136,9 @@ router.delete('/:courseId/review/:reviewId', async (req, res) => {
         }
 
         await course.save();
-        res.json({ message: "Review deleted successfully!" });
+        res.json({ message: "Review deleted successfully! 🗑️" });
     } catch (err) {
-        console.error("Delete Error:", err.message);
-        res.status(500).json({ message: "Server Error: Could not delete review" });
+        res.status(500).json({ message: "Server Error" });
     }
 });
 
