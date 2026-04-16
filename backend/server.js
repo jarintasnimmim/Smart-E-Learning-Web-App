@@ -7,11 +7,17 @@ const app = express();
 
 // ১. Middleware Setup
 app.use(express.json()); 
-app.use(cors()); // ভেরসেলের জন্য origin: '*' ডিফল্ট থাকে
+
+// CORS কনফিগারেশন - এটি আপনার ফ্রন্টএন্ডকে এক্সেস দিবে
+app.use(cors({
+    origin: ["https://smart-e-learning-web-app.vercel.app", "http://localhost:5173"], 
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    credentials: true
+}));
+
 app.use(express.urlencoded({ extended: true }));
 
-// ২. Route Connection
-// পাথগুলো ঠিক আছে কি না একবার চেক করে নিন (server.js যে ফোল্ডারে আছে তার সাপেক্ষে)
+// ২. Route Connection (পাথগুলো আপনার ফোল্ডার অনুযায়ী আছে কি না নিশ্চিত হয়ে নিন)
 app.use('/api/auth', require('./routes/authRoutes'));
 app.use('/api/courses', require('./routes/courseRoutes'));
 app.use('/api/payment', require('./routes/paymentRoutes'));
@@ -19,7 +25,6 @@ app.use('/api/payment', require('./routes/paymentRoutes'));
 // ৩. MongoDB Connection
 const MONGO_URI = process.env.MONGO_URI;
 
-// কানেকশন ফাংশন - যা শুধু একবারই কানেক্ট হবে
 let isConnected = false;
 const connectDB = async () => {
     if (isConnected) return;
@@ -44,6 +49,7 @@ app.get('/', (req, res) => {
 
 // ৫. Global Error Handler
 app.use((err, req, res, next) => {
+    console.error(err.stack);
     res.status(500).json({ error: 'Internal Server Error' });
 });
 
