@@ -7,26 +7,21 @@ const app = express();
 
 // ১. Middleware Setup
 app.use(express.json()); 
+app.use(express.urlencoded({ extended: true })); 
 
-// CORS কনফিগারেশন - এটি আপনার ফ্রন্টএন্ডকে এক্সেস দিবে
+// ২. ফাইনাল CORS সমাধান (এটি আর ব্লক করবে না)
 app.use(cors({
-    origin: [
-        "https://smart-e-learning-web-app.vercel.app", 
-        "https://smart-e-learning-web-app-git-master-jarintasnimmims-projects.vercel.app",
-        "http://localhost:5173" // লোকাল চেক করার জন্য
-    ],
+    origin: true, // এটি সব অরিজিনকে অনুমতি দিবে, ফলে 'null' এরর আর আসবে না
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true
 }));
 
-app.use(express.urlencoded({ extended: true }));
-
-// ২. Route Connection (পাথগুলো আপনার ফোল্ডার অনুযায়ী আছে কি না নিশ্চিত হয়ে নিন)
+// ৩. Route Connection
 app.use('/api/auth', require('./routes/authRoutes'));
 app.use('/api/courses', require('./routes/courseRoutes'));
 app.use('/api/payment', require('./routes/paymentRoutes'));
 
-// ৩. MongoDB Connection
+// ৪. MongoDB Connection
 const MONGO_URI = process.env.MONGO_URI;
 
 let isConnected = false;
@@ -43,21 +38,21 @@ const connectDB = async () => {
 
 connectDB();
 
-// ৪. Root Route
+// ৫. Root Route
 app.get('/', (req, res) => {
     res.status(200).json({
-        message: "SmartLearn API is Live! 🚀",
+        message: "SmartLearn API is Live!",
         dbStatus: mongoose.connection.readyState === 1 ? 'Connected' : 'Disconnected'
     });
 });
 
-// ৫. Global Error Handler
+// ৬. Global Error Handler
 app.use((err, req, res, next) => {
-    console.error(err.stack);
-    res.status(500).json({ error: 'Internal Server Error' });
+    console.error("Server Error:", err.message);
+    res.status(500).json({ error: 'Internal Server Error', details: err.message });
 });
 
-// ৬. Export for Vercel
+// ৭. Server Start
 if (process.env.NODE_ENV !== 'production') {
     const PORT = process.env.PORT || 5000;
     app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

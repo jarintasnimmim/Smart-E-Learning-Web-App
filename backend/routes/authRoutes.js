@@ -26,7 +26,7 @@ router.post('/enroll/:id', async (req, res) => {
 
         user.enrolledCourses.push(courseId);
         await user.save();
-        res.json({ msg: 'Enrollment Successful! 🎉', enrolledCourses: user.enrolledCourses });
+        res.json({ msg: 'Enrollment Successful!', enrolledCourses: user.enrolledCourses });
     } catch (err) {
         console.error("Enrollment Error:", err.message);
         res.status(500).send('Server Error');
@@ -97,7 +97,7 @@ router.post('/forgot-password', async (req, res) => {
         user.password = await bcrypt.hash(newPassword, salt);
 
         await user.save();
-        res.json({ msg: "Password updated successfully! ✅" });
+        res.json({ msg: "Password updated successfully!" });
     } catch (err) {
         console.error("Password Reset Error:", err.message);
         res.status(500).send("Server Error");
