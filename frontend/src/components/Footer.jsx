@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Facebook, Linkedin, Mail, Phone, Globe } from 'lucide-react'; // আইকন যোগ করা হয়েছে
+// বিল্ড এরর ফিক্স করতে আইকনগুলোর নাম পরিবর্তন করা হয়েছে
+import { FacebookIcon, LinkedinIcon, Mail, Phone, Globe } from 'lucide-react'; 
 
 const Footer = () => {
   return (
@@ -43,10 +44,12 @@ const Footer = () => {
             </div>
             <div className="flex justify-center md:justify-start space-x-5 mt-6">
               <a href="#" className="p-2 bg-slate-800 rounded-full hover:bg-blue-600 transition-all duration-300">
-                <Facebook size={20} />
+                {/* FacebookIcon ব্যবহার করা হয়েছে */}
+                <FacebookIcon size={20} />
               </a>
               <a href="#" className="p-2 bg-slate-800 rounded-full hover:bg-blue-400 transition-all duration-300">
-                <Linkedin size={20} />
+                {/* LinkedinIcon ব্যবহার করা হয়েছে */}
+                <LinkedinIcon size={20} />
               </a>
               <a href="#" className="p-2 bg-slate-800 rounded-full hover:bg-slate-700 transition-all duration-300">
                 <Globe size={20} />
