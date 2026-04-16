@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-// বিল্ড এরর ফিক্স করতে আইকনগুলোর নাম পরিবর্তন করা হয়েছে
-import { FacebookIcon, LinkedinIcon, Mail, Phone, Globe } from 'lucide-react'; 
+// শুধুমাত্র নিশ্চিতভাবে কাজ করে এমন আইকনগুলো রাখুন
+import { Mail, Phone, Globe } from 'lucide-react'; 
 
 const Footer = () => {
   return (
@@ -43,13 +43,12 @@ const Footer = () => {
               <span>+880 1234 567 890</span>
             </div>
             <div className="flex justify-center md:justify-start space-x-5 mt-6">
-              <a href="#" className="p-2 bg-slate-800 rounded-full hover:bg-blue-600 transition-all duration-300">
-                {/* FacebookIcon ব্যবহার করা হয়েছে */}
-                <FacebookIcon size={20} />
+              {/* আপাতত আইকন ছাড়া টেক্সট বা সাধারণ চিহ্ন ব্যবহার করুন */}
+              <a href="#" className="p-2 bg-slate-800 rounded-full hover:bg-blue-600 transition-all duration-300 text-xs px-3">
+                FB
               </a>
-              <a href="#" className="p-2 bg-slate-800 rounded-full hover:bg-blue-400 transition-all duration-300">
-                {/* LinkedinIcon ব্যবহার করা হয়েছে */}
-                <LinkedinIcon size={20} />
+              <a href="#" className="p-2 bg-slate-800 rounded-full hover:bg-blue-400 transition-all duration-300 text-xs px-3">
+                IN
               </a>
               <a href="#" className="p-2 bg-slate-800 rounded-full hover:bg-slate-700 transition-all duration-300">
                 <Globe size={20} />
@@ -74,7 +73,7 @@ const Footer = () => {
       </div>
 
       <div className="mt-12 text-center text-slate-500 text-xs border-t border-slate-800/30 pt-8">
-        <p>© {new Date().getFullYear()} <span className="text-blue-500 font-bold">SmartLearn</span>. All Rights Reserved. Built with ❤️ for Future Leaders.</p>
+        <p>© {new Date().getFullYear()} <span className="text-blue-500 font-bold">SmartLearn</span>. All Rights Reserved.</p>
       </div>
     </footer>
   );
