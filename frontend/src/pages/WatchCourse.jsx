@@ -1,23 +1,27 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
-import { Star } from 'lucide-react'; 
+import { Star, CheckCircle } from 'lucide-react'; 
 
 const WatchCourse = () => {
     const { id } = useParams();
     const [course, setCourse] = useState(null);
     const [userRating, setUserRating] = useState(5);
     const [comment, setComment] = useState('');
-    const storedUser = JSON.parse(localStorage.getItem('user'));
+    // প্রগ্রেস ট্র্যাকিংয়ের জন্য নতুন স্টেট
+    const [isCompleted, setIsCompleted] = useState(false);
 
-    // Vercel বা Local হোস্টের জন্য API Base URL সেট করা
+    const storedUser = JSON.parse(localStorage.getItem('user'));
     const API_URL = import.meta.env.VITE_API_URL || 'https://smart-e-learning-web-app.vercel.app/_/backend';
 
     const fetchCourse = async () => {
         try {
-            // এখানে ব্যাকটিক (`) এবং পূর্ণাঙ্গ লিঙ্ক ব্যবহার করা হয়েছে
             const res = await axios.get(`${API_URL}/api/courses/${id}`);
             setCourse(res.data);
+            
+            // লোকাল স্টোরেজ থেকে চেক করা এই কোর্সটি আগে শেষ হয়েছে কি না
+            const completed = localStorage.getItem(`completed_${id}`);
+            if (completed) setIsCompleted(true);
         } catch (err) {
             console.error("Course load failed", err);
         }
@@ -27,26 +31,29 @@ const WatchCourse = () => {
         fetchCourse();
     }, [id]);
 
+    // কোর্স কমপ্লিট করার ফাংশন
+    const handleMarkAsCompleted = () => {
+        setIsCompleted(true);
+        localStorage.setItem(`completed_${id}`, 'true');
+        alert("Congratulations! You have successfully completed this course.");
+    };
+
     const submitReview = async (e) => {
         e.preventDefault();
-        
         if (!storedUser) {
             alert("Please login to post a review!");
             return;
         }
-
         try {
-            // রিভিউ সাবমিট করার জন্য ডাইনামিক লিঙ্ক
             const res = await axios.post(`${API_URL}/api/courses/${id}/review`, {
                 rating: userRating,
                 comment: comment,
                 userId: storedUser.id || storedUser._id,
                 userName: storedUser.name
             });
-            
-            alert(res.data.message || "✅ Review Added!");
+            alert(res.data.message || "Review Added!");
             setComment('');
-            fetchCourse(); // নতুন রিভিউ দেখানোর জন্য রিফ্রেশ
+            fetchCourse();
         } catch (err) {
             const errorMsg = err.response?.data?.message || "Something went wrong";
             alert("❌ " + errorMsg);
@@ -72,8 +79,26 @@ const WatchCourse = () => {
                     ></iframe>
                 </div>
 
+                {/* --- নতুন প্রগ্রেস বাটন সেকশন --- */}
+                <div className="mt-6 flex justify-end">
+                    <button 
+                        onClick={handleMarkAsCompleted}
+                        disabled={isCompleted}
+                        className={`flex items-center gap-2 px-8 py-3 rounded-xl font-bold transition-all duration-300 transform active:scale-95 ${
+                            isCompleted 
+                            ? 'bg-green-500/20 text-green-400 border border-green-500/50 cursor-default' 
+                            : 'bg-blue-600 hover:bg-blue-700 text-white shadow-lg shadow-blue-900/40'
+                        }`}
+                    >
+                        {isCompleted ? (
+                            <><CheckCircle size={20} /> Course Completed</>
+                        ) : (
+                            "Mark as Completed"
+                        )}
+                    </button>
+                </div>
+
                 <div className="mt-10 grid grid-cols-1 lg:grid-cols-3 gap-10">
-                    {/* বাম পাশ: কোর্স ডিটেইলস ও রিভিউ ইনপুট */}
                     <div className="lg:col-span-2 space-y-8">
                         <div>
                             <h1 className="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-white to-slate-400">
@@ -82,7 +107,7 @@ const WatchCourse = () => {
                             <p className="text-slate-400 mt-4 text-lg leading-relaxed">{course.description}</p>
                         </div>
 
-                        {/* রিভিউ দেওয়ার ফর্ম */}
+                        {/* রিভিউ ফর্ম */}
                         <div className="bg-slate-900/80 p-8 rounded-3xl border border-slate-800 backdrop-blur-sm shadow-xl">
                             <h3 className="text-2xl font-bold mb-6 flex items-center gap-2">
                                 <Star className="text-yellow-500 fill-yellow-500" /> Share Your Thoughts
@@ -115,7 +140,7 @@ const WatchCourse = () => {
                         </div>
                     </div>
 
-                    {/* ডান পাশ: স্টুডেন্ট রিভিউ লিস্ট */}
+                    {/* রিভিউ লিস্ট */}
                     <div className="space-y-6">
                         <div className="flex items-center justify-between border-b border-slate-800 pb-4">
                             <h3 className="text-2xl font-bold">Student Feedbacks</h3>

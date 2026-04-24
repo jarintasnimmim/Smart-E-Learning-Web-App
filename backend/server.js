@@ -28,9 +28,10 @@ let isConnected = false;
 const connectDB = async () => {
     if (isConnected) return;
     try {
-        await mongoose.connect(MONGO_URI);
+        // Mongoose 6+ এ নিচের অপশনগুলো দেওয়ার দরকার নেই
+        await mongoose.connect(MONGO_URI); 
         isConnected = true;
-        console.log("✅ MongoDB Connected!");
+        console.log("✅ MongoDB Connected Successfully!");
     } catch (err) {
         console.error("❌ DB Error:", err.message);
     }

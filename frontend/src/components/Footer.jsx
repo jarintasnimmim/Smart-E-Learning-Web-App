@@ -1,6 +1,5 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-// শুধুমাত্র নিশ্চিতভাবে কাজ করে এমন আইকনগুলো রাখুন
 import { Mail, Phone, Globe } from 'lucide-react'; 
 
 const Footer = () => {
@@ -8,7 +7,7 @@ const Footer = () => {
     <footer className="bg-[#0f172a] text-white pt-16 pb-8 mt-20 border-t border-slate-800">
       <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-12 text-center md:text-left">
         
-        {/* লোগো এবং বর্ণনা */}
+        {/* Logo and Description */}
         <div className="space-y-4">
           <div className="flex items-center justify-center md:justify-start gap-2">
             <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center font-bold text-white">S</div>
@@ -19,18 +18,18 @@ const Footer = () => {
           </p>
         </div>
 
-        {/* কুইক লিঙ্কস */}
+        {/* Quick Links */}
         <div>
           <h3 className="text-lg font-bold mb-6 text-slate-100 uppercase tracking-widest">Quick Links</h3>
           <ul className="space-y-3">
-            <li><Link to="/" className="text-slate-400 hover:text-blue-400 transition-colors flex items-center justify-center md:justify-start gap-2">Home</Link></li>
-            <li><Link to="/courses" className="text-slate-400 hover:text-blue-400 transition-colors flex items-center justify-center md:justify-start gap-2">All Courses</Link></li>
-            <li><Link to="/about" className="text-slate-400 hover:text-blue-400 transition-colors flex items-center justify-center md:justify-start gap-2">About Us</Link></li>
-            <li><Link to="/contact" className="text-slate-400 hover:text-blue-400 transition-colors flex items-center justify-center md:justify-start gap-2">Privacy Policy</Link></li>
+            <li><Link to="/" className="text-slate-400 hover:text-blue-400 transition-colors">Home</Link></li>
+            <li><Link to="/courses" className="text-slate-400 hover:text-blue-400 transition-colors">All Courses</Link></li>
+            <li><Link to="/about" className="text-slate-400 hover:text-blue-400 transition-colors">About Us</Link></li>
+            <li><Link to="/contact" className="text-slate-400 hover:text-blue-400 transition-colors">Contact Us</Link></li>
           </ul>
         </div>
 
-        {/* কন্টাক্ট ইনফো */}
+        {/* Contact Us Section */}
         <div>
           <h3 className="text-lg font-bold mb-6 text-slate-100 uppercase tracking-widest">Contact Us</h3>
           <div className="space-y-4">
@@ -42,33 +41,30 @@ const Footer = () => {
               <Phone size={18} className="text-blue-500" />
               <span>+880 1234 567 890</span>
             </div>
-            <div className="flex justify-center md:justify-start space-x-5 mt-6">
-              {/* আপাতত আইকন ছাড়া টেক্সট বা সাধারণ চিহ্ন ব্যবহার করুন */}
-              <a href="#" className="p-2 bg-slate-800 rounded-full hover:bg-blue-600 transition-all duration-300 text-xs px-3">
-                FB
+            
+            {/* Social Icons with Direct SVG (No Blank Issue anymore) */}
+            <div className="flex justify-center md:justify-start space-x-3 mt-6">
+              {/* Facebook */}
+              <a href="https://facebook.com" target="_blank" rel="noreferrer" className="p-2 bg-slate-800 rounded-xl hover:bg-blue-600 transition-all text-white flex items-center justify-center">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>
               </a>
-              <a href="#" className="p-2 bg-slate-800 rounded-full hover:bg-blue-400 transition-all duration-300 text-xs px-3">
-                IN
+
+              {/* LinkedIn */}
+              <a href="https://linkedin.com" target="_blank" rel="noreferrer" className="p-2 bg-slate-800 rounded-xl hover:bg-blue-700 transition-all text-white flex items-center justify-center">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg>
               </a>
-              <a href="#" className="p-2 bg-slate-800 rounded-full hover:bg-slate-700 transition-all duration-300">
+
+              {/* YouTube */}
+              <a href="https://youtube.com" target="_blank" rel="noreferrer" className="p-2 bg-slate-800 rounded-xl hover:bg-red-600 transition-all text-white flex items-center justify-center">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.42a2.78 2.78 0 0 0-1.94 2C1 8.14 1 12 1 12s0 3.86.46 5.58a2.78 2.78 0 0 0 1.94 2c1.72.42 8.6.42 8.6.42s6.88 0 8.6-.42a2.78 2.78 0 0 0 1.94-2C23 15.86 23 12 23 12s0-3.86-.46-5.58z"></path><polygon points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02"></polygon></svg>
+              </a>
+
+              {/* Global/Globe */}
+              <a href="#" className="p-2 bg-slate-800 rounded-xl hover:bg-slate-700 transition-all text-white flex items-center justify-center">
                 <Globe size={20} />
               </a>
             </div>
           </div>
-        </div>
-      </div>
-
-      {/* পেমেন্ট পার্টনার সেকশন */}
-      <div className="max-w-7xl mx-auto px-6 mt-16 border-t border-slate-800/60 pt-10">
-        <p className="text-center text-slate-500 text-[10px] mb-8 uppercase tracking-[0.3em] font-bold">
-          Our Secure Payment Partners
-        </p>
-        <div className="flex flex-wrap justify-center items-center gap-6 md:gap-12 grayscale opacity-40 hover:opacity-100 hover:grayscale-0 transition-all duration-700">
-          <img src="https://pathao.com/wp-content/uploads/2019/03/bkash-logo.png" alt="bKash" className="h-6 md:h-8 object-contain" />
-          <img src="https://download.logo.wine/logo/Nagad/Nagad-Logo.wine.png" alt="Nagad" className="h-10 md:h-12 object-contain" />
-          <img src="https://www.logo.wine/a/logo/Rocket_(mobile_banking_service)/Rocket_(mobile_banking_service)-Logo.wine.svg" alt="Rocket" className="h-8 md:h-10 object-contain" />
-          <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Visa_Inc._logo.svg/2560px-Visa_Inc._logo.svg.png" alt="Visa" className="h-4 md:h-5 object-contain" />
-          <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/Mastercard-logo.svg/1280px-Mastercard-logo.svg.png" alt="Mastercard" className="h-6 md:h-8 object-contain" />
         </div>
       </div>
 

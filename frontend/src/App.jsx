@@ -13,8 +13,10 @@ import Dashboard from './pages/Dashboard';
 import Profile from './pages/Profile';
 import ForgotPassword from './pages/ForgotPassword';
 import AdminReviews from './pages/AdminReviews';
+import About from './pages/About';
+import Contact from './pages/Contact';
 
-// পেজ পরিবর্তন হলে অটোমেটিক স্ক্রল উপরে নিয়ে যাওয়ার জন্য এই ছোট কম্পোনেন্ট
+// পেজ পরিবর্তন হলে অটোমেটিক স্ক্রল উপরে নিয়ে যাওয়ার জন্য
 const ScrollToTop = () => {
   const { pathname } = useLocation();
   useEffect(() => {
@@ -26,27 +28,32 @@ const ScrollToTop = () => {
 function App() {
   return (
     <Router>
-      <ScrollToTop /> {/* স্ক্রল টপ এখানে যোগ করা হলো */}
+      <ScrollToTop />
       <div className="min-h-screen bg-gray-50 flex flex-col font-sans">
         <Navbar />
         
-        {/* মেইন কন্টেন্ট এরিয়া */}
         <main className="flex-grow">
           <Routes>
             <Route path="/" element={<Home />} />
+            
+            {/* ১. এই লাইনটি যোগ করা হলো যাতে 'Courses' বাটনে ক্লিক করলে 404 না আসে */}
+            <Route path="/courses" element={<Home />} /> 
+            
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<SignUp />} />
+            
+            {/* কোর্স ডিটেইলস পেজ */}
             <Route path="/course/:id" element={<CourseDetails />} />
+            
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
-            
-            {/* Protected বা স্পেশাল রুটস */}
             <Route path="/watch/:id" element={<WatchCourse />} />
             <Route path="/admin" element={<Admin />} />
             <Route path="/admin-reviews" element={<AdminReviews />} />
-            
-            {/* যদি ইউজার ভুল লিঙ্কে যায় তার জন্য (Optional) */}
+            <Route path="/about" element={<About />} />
+            <Route path="/contact" element={<Contact />} />
+            {/* ২. ভুল পাথের জন্য 404 হ্যান্ডলার */}
             <Route path="*" element={<div className="text-center mt-20 font-bold text-2xl">404 - Page Not Found!</div>} />
           </Routes>
         </main>

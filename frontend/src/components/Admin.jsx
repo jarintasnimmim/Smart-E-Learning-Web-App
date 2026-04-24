@@ -20,7 +20,7 @@ const Admin = () => {
 
     // অ্যাডমিন ভেরিফিকেশন (এটি রেন্ডারিং এর আগে হওয়া উচিত নয়, তাই useEffect এর ভেতরে বা কন্ডিশনাল রেন্ডারিং এ রাখা ভালো)
     if (!userData || userData.role !== 'admin') {
-        return <div className="text-center mt-20 text-2xl text-red-600 font-bold">Access Denied! 🚫</div>;
+        return <div className="text-center mt-20 text-2xl text-red-600 font-bold">Access Denied!</div>;
     }
 
     const fetchCourses = async () => {
@@ -62,12 +62,12 @@ const Admin = () => {
             if (editId) {
                 // এডিট করার জন্য সঠিক রাউট এবং ব্যাকটিক ব্যবহার
                 await axios.put(`${API_URL}/api/courses/${editId}`, finalData);
-                alert('✅ Course Updated!');
+                alert('Course Updated!');
                 setEditId(null);
             } else {
                 // নতুন কোর্স অ্যাড করার সঠিক রাউট
                 await axios.post(`${API_URL}/api/courses/add`, finalData);
-                alert('✅ Course Added!');
+                alert('Course Added!');
             }
             
             setFormData({ title: '', instructor: '', price: '', image: '', videoUrl: '', description: '' });

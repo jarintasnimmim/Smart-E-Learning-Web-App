@@ -126,7 +126,7 @@ const CourseDetails = () => {
 
                     {isEnrolled && (
                         <p className="text-center text-green-600 font-bold animate-bounce">
-                            🎉 You have lifetime access to this course.
+                             You have lifetime access to this course.
                         </p>
                     )}
                 </div>
